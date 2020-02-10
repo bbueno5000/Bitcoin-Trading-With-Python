@@ -11,6 +11,7 @@
     <OutputPath>.</OutputPath>
     <Name>bitcoin_trading_with_python</Name>
     <RootNamespace>bitcoin_trading_with_python</RootNamespace>
+    <InterpreterId>CondaEnv|CondaEnv|bitcoin_trading_env</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,6 +23,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="bitcoin_trading_with_python.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="CondaEnv|CondaEnv|bitcoin_trading_env" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="requirements.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
