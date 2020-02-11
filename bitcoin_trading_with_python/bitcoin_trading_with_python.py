@@ -4,6 +4,56 @@ DOCSTRING
 import matplotlib
 import numpy
 
+def back_testing():
+    """
+    DOCSTRING
+    """
+    dates, prices, volumes = [], [], []
+    try:
+        source_code = open('btceUSD.csv', 'r').read()
+        split_source = source_code.split('\n')
+        for line in split_source[-50000:]:
+            split_line = line.split(',')
+            dates.append(float(split_line[0]))
+            prices.append(float(split_line[1]))
+            volumes.append(float(split_line[2]))
+    except Exception as exception:
+        print('Failed:Back Testing:' + str(exception))
+    ema_price = exponential_moving_average(prices, 50)
+    rsi_line = relative_strength_index(prices, n_variable=1500)
+    stance, last_purchase_price, net_profit = 'none', 0, 0
+    print(
+        'Starting Time:' + str(
+            datetime.datetime.fromtimestamp(float(dates[0])).strftime('%Y-%m-%d %H:%M:%S')
+            )
+        )
+    for count, element in enumerate(rsi_line):
+        if stance == 'none':
+            if element < 40:
+                stance = 'holding'
+                print('Bought Bitcoin @ ' + prices[count])
+                last_purchase_price = prices[count]
+        elif stance == 'holding':
+            if element > 60:
+                stance = 'none'
+                print('Sold Bitcoin @ ' + prices[count])
+                fees = 0.002*(prices[count]+last_purchase_price)
+                print('Transaction Fees:' + fees)
+                trade_profit = (prices[count]-last_purchase_price)-fees
+                print('Trade Profit:' + trade_profit)
+                net_profit += trade_profit
+    print('Net Profit:' + net_profit)
+
+def exponential_moving_average(values, window):
+    """
+    Calculate exponential moving average.
+    """
+    weights = numpy.exp(numpy.linspace(-1.0, 0.0, window))
+    weights /= weights.sum()
+    average = numpy.convolve(values, weights, mode='full')[:len(values)]
+    average[:window] = average[window]
+    return average
+
 def relative_strength_index(prices, n_variable=14):
     """
     Calculate relative strength index.
