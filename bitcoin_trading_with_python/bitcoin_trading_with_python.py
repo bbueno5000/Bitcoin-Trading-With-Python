@@ -1,8 +1,12 @@
 """
 DOCSTRING
 """
+import datetime
+import json
 import matplotlib
 import numpy
+import time
+import urllib
 
 def back_testing():
     """
@@ -53,6 +57,17 @@ def exponential_moving_average(values, window):
     average = numpy.convolve(values, weights, mode='full')[:len(values)]
     average[:window] = average[window]
     return average
+
+def live_data():
+    """
+    DOCSTRING
+    """
+    prices = urllib.request.urlopen('http://data.mtgox.com/api/2/BTCUSD/money/ticker_fast')
+    url_json = json.loads(prices)
+    previous_price = url_json['ticker']['last']
+    updated_time = url_json['ticker']['updated']
+    print(updated_time + ':' + previous_price)
+    time.sleep(1)
 
 def relative_strength_index(prices, n_variable=14):
     """
